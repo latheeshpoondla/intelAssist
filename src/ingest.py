@@ -1,5 +1,15 @@
 import os
 import re
+from pypdf import PdfReader
+
+def read_pdf(file_path):
+    reader = PdfReader(file_path)
+    text = ""
+
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
+
+    return text
 
 def load_documents(folder_path):
     docs = []
@@ -8,7 +18,10 @@ def load_documents(folder_path):
         if file.endswith(".txt"):
             with open(os.path.join(folder_path, file), "r", encoding="utf-8") as f:
                 docs.append((file, f.read()))
-
+        elif file.endswith(".pdf"):
+            text = read_pdf(os.path.join(folder_path, file))
+            docs.append((file, text))
+        
     return docs
 
 
